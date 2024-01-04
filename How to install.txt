@@ -1,0 +1,18 @@
+- Download and Install Node JS and Mongo DB
+- Start Mongo DB server by running the following command in "bin" folder where Mongo DB is installed:
+    > ./mongod
+    or
+    > mongod
+- Then open command prompt in this folder and run the following command:
+    > npm update
+    > npm install -g nodemon
+    > nodemon index.js
+- Then open your browser and enter the following address:
+    > http://localhost:4000/
+
+Website = https://adnan-tech.com
+Facebook = https://web.facebook.com/ComputerProgrammingTutorial
+Email                    = support@adnan-tech.com
+WhatsApp (Messages only) = +923105461304
+
+If you face any problem, please feel free to contact us.

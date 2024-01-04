@@ -1,0 +1,180 @@
+    <footer>
+        <div class="container" style="padding-top: 50px; padding-bottom: 50px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="brand" href="<%= mainURL %>">TrustPilot</a>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 50px; margin-bottom: 20px;">
+                <div class="col-md-3">
+                    <p class="title">About</p>
+
+                    <ul>
+                        <li><a href="/about">About us</a></li>
+                        <li><a href="/jobs">Jobs</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/how-we-work">How TrustPilot works</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <p class="title">Community</p>
+
+                    <ul>
+                        <li><a href="/trust">Trust in reviews</a></li>
+                        <li><a href="/help-centre">Help centre</a></li>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Sign up</a></li>
+                        <li class="social-media">
+                            <a href="https://www.facebook.com/" target="_blank"><i class="fa fa-facebook"></i></a>
+                            <a href="https://www.twitter.com/" target="_blank"><i class="fa fa-twitter"></i></a>
+                            <a href="https://www.instagram.com/" target="_blank"><i class="fa fa-instagram"></i></a>
+                            <a href="https://www.linkedin.com/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="https://www.youtube.com/" target="_blank"><i class="fa fa-youtube"></i></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <p class="title">Businesses</p>
+
+                    <ul>
+                        <li><a href="/products">Products</a></li>
+                        <li><a href="/pricing">Plans &amp; pricing</a></li>
+                        <li><a href="/business-blog">Blog for business</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <p class="title" style="margin-bottom: 20px;">Choose language</p>
+
+                    <!-- <link rel="stylesheet" href="//cdn.tutorialjinni.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+                    <link rel="stylesheet" href="//cdn.tutorialjinni.com/bootstrap-select/1.12.4/css/bootstrap-select.min.css" />
+                    <link rel="stylesheet" href="//g.tutorialjinni.com/mojoaxel/bootstrap-select-country/dist/css/bootstrap-select-country.min.css" /> -->
+
+                    <link rel="stylesheet" href="/public/countrypicker/bootstrap.min.css" />
+                    <link rel="stylesheet" href="/public/countrypicker/bootstrap-select.min.css" />
+                    <link rel="stylesheet" href="/public/countrypicker/bootstrap-select-country.min.css" />
+
+                    <select class="selectpicker countrypicker form-control" data-flag="true"></select>
+
+                    <script src="/public/countrypicker/jquery.min.js"></script>
+                    <script src="/public/countrypicker/bootstrap.min.js"></script>
+                    <script src="/public/countrypicker/bootstrap-select.min.js"></script>
+                    <script src="/public/countrypicker/bootstrap-select-country.min.js"></script>
+
+                    <!-- <script src="//cdn.tutorialjinni.com/jquery/3.6.1/jquery.min.js"></script>
+                    <script src="//cdn.tutorialjinni.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                    <script src="//cdn.tutorialjinni.com/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+                    <script src="//g.tutorialjinni.com/mojoaxel/bootstrap-select-country/dist/js/bootstrap-select-country.min.js"></script> -->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="links-legal">
+                        <li><a href="/legal">Legal</a></li>
+                        <li><a href="/privacy-policy">Privacy policy</a></li>
+                        <li><a href="/terms-conditions">Terms &amp; conditions</a></li>
+                        <li><a href="/reviewers-guidelines">Guidelines for reviewers</a></li>
+                        <li><a href="/cookie-preference">Cookie preference</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 50px;">
+                <div class="col-md-12">
+                    <p style="color: #9fa0a0;">&copy; <%= (new Date()).getFullYear() %> Trustpilot, Inc. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function getUser() {
+            const response = await axios.post(
+                mainURL + "/me",
+                null,
+                {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("accessToken")
+                    }
+                }
+            )
+
+            if (response.data.status == "success") {
+                window.user = response.data.user
+
+                if (typeof initApp !== "undefined") {
+                    initApp()
+                }
+
+                if (typeof reviewDetailApp !== "undefined") {
+                    reviewDetailApp.user = window.user
+                }
+
+                if (typeof companyDetailApp !== "undefined") {
+                    companyDetailApp.user = window.user
+                }
+            } else {
+                // swal.fire("Login", response.data.message, "error")
+            }
+
+            if (typeof initHeaderApp !== "undefined") {
+                initHeaderApp()
+            }
+        }
+
+        getUser()
+    </script>
+
+    <style>
+        footer ul {
+            list-style-type: none;
+        }
+        footer .links-legal li {
+            display: inline-block;
+            margin-right: 50px;
+        }
+        footer .countrypicker ul li {
+            margin-top: 10px !important;
+        }
+        footer .countrypicker a {
+            color: black !important;
+        }
+        footer .social-media a {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        footer ul li {
+            margin-top: 20px;
+        }
+        footer ul {
+            padding-left: 0px;
+        }
+        footer .title {
+            color: #9fa0a0;
+            margin-bottom: 0px;
+        }
+        footer .brand:hover {
+            color: initial;
+        }
+        footer .brand {
+            font-size: 30px;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        footer a {
+            color: white !important;
+            text-decoration: none;
+        }
+        footer {
+            background-color: #1c1c1c;
+        }
+    </style>
+
+</body>
+</html>

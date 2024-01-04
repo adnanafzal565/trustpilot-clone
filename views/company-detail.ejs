@@ -1,0 +1,457 @@
+<%- include ("layouts/header") %>
+
+	<input type="hidden" id="domain" value="<%= domain %>" />
+
+	<div style="display: contents;" id="companyDetailApp">
+		<div class="container" style="margin-top: 50px; margin-bottom: 50px;">
+			<div class="row" v-if="isLoading" style="padding: 25px;">
+				<div class="col-md-12" style="text-align: center;">
+					<div class="spinner-border">
+						<span class="sr-only">Loading...</span>
+					</div>
+				</div>
+			</div>
+
+			<template v-if="company != null">
+				<div class="row">
+					<div class="col-md-12">
+						<nav style="--bs-breadcrumb-divider: '>';">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="<%= mainURL %>">Home</a></li>
+								<li class="breadcrumb-item">Company</li>
+								<li class="breadcrumb-item active" v-text="company?.title || company?.domain"></li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3">
+						<img v-bind:src="company.screenshot" style="width: 100%; height: 200px; object-fit: cover"
+							onerror="this.src = '/public/img/placeholder-image.png'" />
+					</div>
+
+					<div class="col-md-5">
+						<h1 v-text="company.title || company.domain" style="margin-top: 0px;"></h1>
+						<p style="color: gray;">
+							Reviews <span v-text="company.reviews"></span>
+							<template v-if="relativeReview(company.ratings) != ''">
+								<span style="margin-right: 10px;
+								    font-size: 20px;
+								    position: relative;
+								    bottom: 2px;">.</span>
+								<span v-text="relativeReview(company.ratings)"></span>
+							</template>
+						</p>
+
+						<div class="stars">
+							<i v-for="i in 5" v-bind:class="'fa fa-star star ' + (i > company.ratings ? 'initial' : company.starColor)"
+								style="font-size: 30px;"></i>
+
+							<span v-if="company.ratings > 0" v-text="company.ratings" style="font-size: 20px;
+							    margin-left: 10px;
+							    position: relative;
+							    bottom: 5px;
+							    color: gray;"></span>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<a v-bind:href="company.domainWithServer" target="_blank" class="link-visit">
+							<div class="row">
+								<div class="col-md-10">
+									<i class="fa fa-external-link"></i> &nbsp;
+									<span class="domain" v-text="company.domain"></span>
+									<p>Visit this website</p>
+								</div>
+
+								<div class="col-md-1">
+									<i class="fa fa-arrow-right"></i>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</template>
+		</div>
+
+		<div v-if="company != null" style="padding-top: 20px; padding-bottom: 50px; background-color: #fcfbf3;">
+			<div class="container" style="">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="row" v-if="!hasReviewed">
+							<div class="col-md-12">
+								<div class="card card-body border-radius">
+									<div class="row write-review">
+										<div class="col-md-1">
+											<img v-bind:src="profileImage" v-on:error="onProfileError"
+												style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" />
+										</div>
+
+										<div class="col-md-5">
+											<template v-if="user != null">
+												<p v-text="user.name" class="user"></p>
+												<a v-bind:href="mainURL + '/evaluate/' + company.domain" class="link-review">
+													Write a review
+												</a>
+											</template>
+
+											<template v-else>
+												<p style="position: relative;
+												    top: 50%;
+												    transform: translateY(-50%);">Please login to post a review.</p>
+											</template>
+										</div>
+
+										<div class="col-md-6">
+											<div class="stars">
+												<div v-for="i in 5" class="rating-stars"
+													v-on:mouseenter="onmouseenterStar(i)"
+													v-on:click="onclickStar(i)">
+													<i class="fa fa-star star"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<template v-for="review in reviews">
+							<review-component v-bind:review="review" />
+						</template>
+
+						<button v-if="showLoadMoreBtn"
+							style="margin-top: 10px;" 
+							class="btn btn-primary btn-block"
+							v-on:click="loadMoreReviews"
+							v-bind:disabled="loadingMore"
+							v-text="loadingMore ? 'Loading...' : 'Load more'"></button>
+					</div>
+
+					<div class="col-md-4">
+						<p style="position: absolute;
+						    z-index: 1000;
+						    left: 50%;
+						    transform: translateX(-50%) rotateZ(340deg);
+						    top: 50px;
+						    background-color: palevioletred;
+						    color: white;
+						    font-family: monospace;
+						    padding: 10px 20px;
+						    border-radius: 5px;">Premium feature</p>
+						<div class="card card-body" style="margin-top: 10px; filter: blur(5px);">
+							<p style="font-weight: bold; font-size: 20px;">Company activity</p>
+							<p v-if="company.isClaimed">
+								<i class="fa fa-check"></i>&nbsp;
+								Claimed profile
+							</p>
+							<template v-else>
+								<p>
+									<i class="fa fa-exclamation-triangle"></i>&nbsp;
+									Unclaimed profile
+								</p>
+
+								<button type="button" class="btn btn-info"
+									data-toggle="modal" data-target="#claimModal"
+									style="margin-top: 10px;">Claim</button>
+							</template>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="claimModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="justify-content: left;">
+						<h5 class="modal-title">Claim <span v-text="domain"></span></h5>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-md-12">
+								<p>Enter your email where you want to receive the verification code. You must have access to any of <span v-text="domain"></span> email address.</p>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-5" style="padding-right: 0px;">
+								<input type="text" class="form-control" placeholder="info" v-model="email" />
+							</div>
+
+							<div class="col-md-1" style="padding-left: 12px;
+								padding-right: 0px;">
+								<span style="position: absolute;
+								    top: 50%;
+								    transform: translateY(-50%);
+								    font-size: 20px;">@</span>
+							</div>
+
+							<div class="col-md-5" style="padding-left: 0px;">
+								<input type="text" class="form-control" v-bind:value="domain" disabled />
+							</div>
+						</div>
+
+						<div class="row" v-if="email != ''" style="margin-top: 20px;">
+							<div class="col-md-12">
+								<p>You will receive verification code at <b v-text="email + '@' + domain"></b></p>
+							</div>
+						</div>
+
+						<div class="row" style="margin-top: 20px;">
+							<div class="col-md-12">
+								<p>This feature is available in premium version only.</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary"
+							v-on:click="claimWebsite"
+							v-bind:disabled="claiming"
+							v-text="claiming ? 'Loading...' : 'Claim website'"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const domain = document.getElementById("domain").value
+		let companyDetailApp = null
+
+		function initCompanyDetailApp() {
+			companyDetailApp = Vue.createApp({
+
+				components: {
+					ReviewComponent
+				},
+
+				data() {
+					return {
+						isLoading: false,
+						company: null,
+						reviews: [],
+						profileImage: "",
+						user: null,
+						mainURL: mainURL,
+						relativeReview: relativeReview,
+						onmouseenterStar: onmouseenterStar,
+						hasReviewed: false,
+						page: 1,
+						loadingMore: false,
+						showLoadMoreBtn: false,
+						domain: domain,
+						email: "",
+						claiming: false
+					}
+				},
+
+				methods: {
+
+					async claimWebsite() {
+						if (this.email == "") {
+							swal.fire("Error", "Please enter email.", "error")
+							return
+						}
+
+						this.claiming = true
+
+						try {
+							const formData = new FormData()
+							formData.append("domain", domain)
+							formData.append("email", this.email)
+							const response = await axios.post(
+								mainURL + "/companies/claim",
+								formData,
+								{
+									headers: {
+										Authorization: "Bearer " + localStorage.getItem("accessToken")
+									}
+								}
+							)
+
+							if (response.data.status == "success") {
+								swal.fire("Claim", response.data.message, "success")
+									.then(function () {
+										window.location.href = mainURL + "/company/claim/" + domain
+									})
+							} else {
+								swal.fire("Error", response.data.message, "error")
+							}
+						} catch (exp) {
+							swal.fire("Error", exp.message, "error")
+						} finally {
+							this.claiming = false
+						}
+					},
+
+					async loadMoreReviews() {
+						this.page++
+						this.loadingMore = true
+
+						try {
+							const formData = new FormData()
+							formData.append("domain", domain)
+							formData.append("page", this.page)
+							const response = await axios.post(
+								mainURL + "/companies/reviews",
+								formData
+							)
+
+							if (response.data.status == "success") {
+								const reviews = response.data.reviews
+								for (let a = 0; a < reviews.length; a++) {
+									this.reviews.push(reviews[a])
+								}
+								if (reviews.length <= 0) {
+									this.showLoadMoreBtn = false
+								}
+							} else {
+								swal.fire("Error", response.data.message, "error")
+							}
+						} catch (exp) {
+							swal.fire("Error", exp.message, "error")
+						} finally {
+							this.loadingMore = false
+						}
+					},
+
+					onclickStar(star) {
+						if (this.company != null) {
+							window.location.href = mainURL + "/evaluate/" + this.company.domain + "/" + star
+						}
+					},
+
+					onProfileError() {
+						this.profileImage = '/public/img/user-placeholder.png'
+					}
+				},
+
+				async mounted() {
+					this.isLoading = true
+
+					try {
+						const formData = new FormData()
+						formData.append("domain", domain)
+						formData.append("page", this.page)
+						const response = await axios.post(
+							mainURL + "/companies/find",
+							formData,
+							{
+								headers: {
+									Authorization: "Bearer " + localStorage.getItem("accessToken")
+								}
+							}
+						)
+
+						if (response.data.status == "success") {
+							this.company = response.data.company
+							this.reviews = response.data.reviews
+							this.hasReviewed = response.data.hasReviewed
+
+							if (this.reviews.length > 0) {
+								this.showLoadMoreBtn = true
+							}
+						} else {
+							swal.fire("Error", response.data.message, "error")
+						}
+					} catch (exp) {
+						swal.fire("Error", exp.message, "error")
+					} finally {
+						this.isLoading = false
+					}
+				},
+
+				watch: {
+					user(to, from) {
+						if (to != null) {
+							this.profileImage = to.profileImage
+						}
+					}
+				}
+			}).mount("#companyDetailApp")
+		}
+
+		initCompanyDetailApp()
+	</script>
+
+	<style>
+		/*#claimModal .btn-primary:hover {
+		 	color: #286090;
+    		background-color: #fdfdfd;
+		}*/
+		#claimModal .btn-secondary:hover {
+			background-color: #fdfdfd !important;
+		}
+		.write-review .stars {
+			position: relative;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    float: right;
+		}
+		.rating-stars .star {
+			font-size: 20px;
+		}
+		.rating-stars {
+			display: contents;
+		}
+		.write-review .star {
+			cursor: pointer;
+		}
+		.write-review .link-review {
+			color: #205cd4;
+		}
+		.write-review .user {
+			margin-bottom: 0px;
+			font-weight: bold;
+		}
+		.border-radius {
+			border-radius: 10px;
+		}
+		.link-visit .domain {
+			font-weight: bold;
+    		font-size: 18px;
+		}
+		.link-visit p {
+			margin-top: 10px;
+			margin-bottom: 0px;
+			color: gray;
+		}
+		.link-visit:hover p {
+			color: black;
+		}
+		.link-visit:hover .fa-external-link,
+		.link-visit:hover .domain,
+		.link-visit:hover .fa-arrow-right {
+			color: black;
+		}
+		.link-visit .fa-arrow-up-right-from-square,
+		.link-visit .domain,
+		.link-visit .fa-arrow-right {
+			color: #205cd4;
+		}
+		.link-visit:hover {
+			background-color: #c2d5f7;
+			border-color: #c2d5f7;
+		}
+		.link-visit {
+			display: block;
+			border: 1px solid #205cd4;
+			padding: 15px 35px;
+			border-radius: 10px;
+		}
+		.breadcrumb a {
+			color: black;
+		}
+		.breadcrumb {
+			background: none !important;
+		}
+	</style>
+
+<%- include ("layouts/footer") %>

@@ -1,0 +1,16 @@
+<%- await include ("layouts/header") %>
+
+	<input type="hidden" id="title" value="<%= title %>" />
+
+	<div style="display: contents;" id="categoryApp">
+		
+	</div>
+
+	<script>
+		const title = document.getElementById("title").value
+		Vue.createApp({
+			// 
+		}).mount("#categoryApp")
+	</script>
+
+<%- await include ("layouts/footer") %>
