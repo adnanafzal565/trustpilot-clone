@@ -124,6 +124,59 @@ module.exports =  {
         const self = this
         const router = express.Router()
 
+        router.post("/fetchByCategory", async function (request, result) {
+            const category = request.fields.category || ""
+            /*if (!category) {
+                result.json({
+                    status: "error",
+                    message: "Category field is required."
+                })
+                return
+            }*/
+            let filter = {}
+            if (category) {
+                filter = {
+                    categories: category
+                }
+            }
+
+            // number of records you want to show per page
+            const perPage = 10
+         
+            // total number of records from database
+            // const total = await db.collection("companies").count()
+         
+            // Calculating number of pagination links required
+            // const pages = Math.ceil(total / perPage)
+         
+            // get current page number
+            const pageNumber = (request.query.page == null) ? 1 : request.query.page
+         
+            // get records to skip
+            const startFrom = (pageNumber - 1) * perPage
+
+            let companies = await db.collection("companies")
+                .find(filter)
+                .sort({
+                    ratings: -1
+                })
+                .skip(startFrom)
+                .limit(perPage)
+                .toArray()
+
+            for (let a = 0; a < companies.length; a++) {
+                companies[a].screenshot = mainURL + "/" + companies[a].screenshot
+                companies[a].starColor = globals.getStarColor(companies[a].ratings)
+            }
+
+            result.json({
+                status: "success",
+                message: "Data has been fetched.",
+                companies: companies
+            })
+            return
+        })
+
         router.get("/fetch-image/:_id", async function (request, result) {
             const _id = request.params._id
 
@@ -643,7 +696,7 @@ module.exports =  {
                     accessToken: accessToken
                 })
             } catch (exp) {
-                console.log(exp)
+                // console.log(exp)
             }
 
             if (!domain) {

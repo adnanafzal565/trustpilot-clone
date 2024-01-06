@@ -531,7 +531,7 @@ http.listen(port, function () {
             })
         })
 
-        app.get("/categories/:title", async function (request, result) {
+        app.get("/categories/:title?", async function (request, result) {
             const title = request.params.title || ""
             const html = await ejs.renderFile("views/category.ejs", {
                 mainURL: mainURL,
