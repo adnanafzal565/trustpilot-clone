@@ -113,12 +113,12 @@
 								<div class="card">
 									<div class="card-body">
 										<div class="row">
-											<div class="col-md-3">
+											<div class="col-3">
 												<img src="/userProfileImage/<%= review.user._id %>"
 													onerror="this.src = '/public/img/user-placeholder.png'" />
 											</div>
 
-											<div class="col-md-9">
+											<div class="col-9">
 												<div class="stars">
 													<%
 														let color = globals.getStarColor(review.ratings)
@@ -176,7 +176,7 @@
 			review = (reviews.length == 0) ? null : reviews[0]
 			if (review != null) {
 		%>
-			<div class="bg">
+			<div class="bg" id="your-stories">
 				<div class="container">
 					<div class="row">
 						<div class="col-md-12 text-center">
@@ -186,7 +186,7 @@
 					</div>
 
 					<div class="row" style="margin-top: 50px;">
-						<div class="col-md-6 review" style="background-color: white; padding: 50px; margin-top: 0px;">
+						<div class="col-6 review" style="background-color: white; margin-top: 0px;">
 							<div class="stars">
 								<%
 									let color = globals.getStarColor(review.ratings)
@@ -208,7 +208,7 @@
 							</p>
 						</div>
 
-						<div class="col-md-6" style="padding-left: 0px;">
+						<div class="col-6 img">
 							<img src="/userProfileImage/<%= review.user._id %>"
 								onerror="this.src = '/public/img/user-placeholder.png'"
 								style="width: 100%; height: 400px; object-fit: cover;" />
@@ -323,9 +323,25 @@
 			margin-top: 30px;
 			margin-bottom: 30px;
 		}
-		#section-about .container {
-			padding-left: 200px !important;
-			padding-right: 200px !important;
+		#your-stories div.img {
+			padding-left: 0px;
+			padding-right: 0px;
+		}
+		/* for mobile */
+		@media only screen and (max-width: 767px) {
+			#your-stories div.review {
+				padding-top: 50px;
+			}
+		}
+		/* for desktop */
+		@media only screen and (min-width: 768px) {
+			#section-about .container {
+				padding-left: 200px !important;
+				padding-right: 200px !important;
+			}
+			#your-stories div.review {
+				padding: 50px;
+			}
 		}
 		#section-about {
 			background-color: #022a1c;

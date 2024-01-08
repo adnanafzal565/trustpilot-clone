@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>TrustPilot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="stylesheet" href="/public/css/bootstrap.css" />
         <link rel="stylesheet" href="/public/css/font-awesome.css" />
@@ -26,43 +27,45 @@
           const mainURL = document.getElementById("mainURL").value
         </script>
 
-        <nav class="navbar navbar-expand-lg bg-light" id="headerApp">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="<%= mainURL %>">TrustPilot</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <nav class="navbar navbar-expand-lg navbar-light navbar-inverse" id="headerApp">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="<%= mainURL %>">TrustPilot</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                style="background-color: white;">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item" v-if="user == null">
+                    <a v-bind:class="'nav-link' + (path == '/login' ? ' active' : '')" href="/login">Login</a>
+                  </li>
+        
+                  <li class="nav-item" v-if="user == null">
+                    <a v-bind:class="'nav-link' + (path == '/register' ? ' active' : '')" href="/register">Register</a>
+                  </li>
+
+                  <li class="nav-item">
+                      <ul>
+                          <li class="nav-item dropdown" v-if="user != null">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img v-bind:src="user.profileImage ?? ''" style="width: 40px; height: 40px;
+                                    object-fit: cover; border-radius: 50%; margin-right: 10px;"
+                                    onerror="this.src = '/public/img/user-placeholder.png'" />
+
+                                <span v-text="user.name"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                              <li><a class="dropdown-item" v-on:click="doLogout" href="javascript:void(0);">Logout</a></li>
+                            </ul>
+                          </li>
+                      </ul>
+                  </li>
                   
-                </ul>
-
-                    <ul class="my-2 my-lg-0" id="link-auth">
-            
-                      <li class="nav-item" v-if="user == null">
-                        <a v-bind:class="'nav-link' + (path == '/login' ? ' active' : '')" href="/login">Login</a>
-                      </li>
-            
-                      <li class="nav-item" v-if="user == null">
-                        <a v-bind:class="'nav-link' + (path == '/register' ? ' active' : '')" href="/register">Register</a>
-                      </li>
-                      
-                      <li class="nav-item dropdown" v-if="user != null">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img v-bind:src="user.profileImage ?? ''" style="width: 40px; height: 40px;
-                                object-fit: cover; border-radius: 50%; margin-right: 10px;"
-                                onerror="this.src = '/public/img/user-placeholder.png'" />
-
-                            <span v-text="user.name"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                          <li><a class="dropdown-item" v-on:click="doLogout" href="javascript:void(0);">Logout</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-              </div>
+                    
+              </ul>
             </div>
+          </div>
         </nav>
 
         <script>
@@ -106,22 +109,29 @@
             .dropdown-toggle:hover {
                 text-decoration: none !important;
             }
-            #link-auth {
-                list-style-type: none;
-                float: right;
-                display: flex;
-            }
             #headerApp .nav-link,
             #headerApp .navbar-brand {
                 color: white !important;
             }
+            /* for mobile */
+            @media only screen and (max-width: 767px) {
+                #navbarSupportedContent ul {
+                    margin-left: auto !important;
+                }
+            }
+            /* for desktop */
+            @media only screen and (min-width: 768px) {
+                #headerApp {
+                    padding-left: 150px;
+                    padding-right: 150px;
+                }
+            }
             #headerApp {
                 background-color: #1c1c1c !important;
-                padding-left: 150px;
-                padding-right: 150px;
                 border-radius: 0px;
                 margin-bottom: 0px;
             }
+            html, body { overflow-x: hidden; }
             /*.container {
                 padding-left: 100px !important;
                 padding-right: 100px !important;
