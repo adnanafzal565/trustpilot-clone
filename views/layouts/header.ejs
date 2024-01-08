@@ -95,7 +95,8 @@
                             if (response.data.status == "success") {
                                 // remove access token from local storage
                                 localStorage.removeItem("accessToken")
-                                window.location.href = "/login"
+                                // window.location.href = "/login"
+                                window.location.reload()
                             } else {
                                 swal.fire("Error", response.data.message, "error")
                             }
@@ -106,6 +107,14 @@
         </script>
 
         <style>
+            @media only screen and (max-width: 767px) {
+                .margin-top-mobile-20 {
+                    margin-top: 20px;
+                }
+                .margin-top-mobile {
+                    margin-top: 50px;
+                }
+            }
             .dropdown-toggle:hover {
                 text-decoration: none !important;
             }

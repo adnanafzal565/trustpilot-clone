@@ -31,7 +31,7 @@
 							onerror="this.src = '/public/img/placeholder-image.png'" />
 					</div>
 
-					<div class="col-md-5">
+					<div class="col-md-5 margin-top-mobile-20">
 						<h1 v-text="company.title || company.domain" style="margin-top: 0px;"></h1>
 						<p style="color: gray;">
 							Reviews <span v-text="company.reviews"></span>
@@ -56,16 +56,16 @@
 						</div>
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-md-4 margin-top-mobile-20">
 						<a v-bind:href="company.domainWithServer" target="_blank" class="link-visit">
 							<div class="row">
-								<div class="col-md-10">
+								<div class="col-md-10 col-xs-10">
 									<i class="fa fa-external-link"></i> &nbsp;
 									<span class="domain" v-text="company.domain"></span>
 									<p>Visit this website</p>
 								</div>
 
-								<div class="col-md-1">
+								<div class="col-md-1 col-xs-1">
 									<i class="fa fa-arrow-right"></i>
 								</div>
 							</div>
@@ -83,12 +83,12 @@
 							<div class="col-md-12">
 								<div class="card card-body border-radius">
 									<div class="row write-review">
-										<div class="col-md-1">
+										<div class="col-md-1 col-xs-3">
 											<img v-bind:src="profileImage" v-on:error="onProfileError"
 												style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" />
 										</div>
 
-										<div class="col-md-5">
+										<div class="col-md-5 col-xs-9">
 											<template v-if="user != null">
 												<p v-text="user.name" class="user"></p>
 												<a v-bind:href="mainURL + '/evaluate/' + company.domain" class="link-review">
@@ -179,19 +179,15 @@
 						</div>
 
 						<div class="row">
-							<div class="col-md-5" style="padding-right: 0px;">
+							<div class="col-md-5 input-email">
 								<input type="text" class="form-control" placeholder="info" v-model="email" />
 							</div>
 
-							<div class="col-md-1" style="padding-left: 12px;
-								padding-right: 0px;">
-								<span style="position: absolute;
-								    top: 50%;
-								    transform: translateY(-50%);
-								    font-size: 20px;">@</span>
+							<div class="col-md-1 at-icon">
+								<span style="font-size: 20px;">@</span>
 							</div>
 
-							<div class="col-md-5" style="padding-left: 0px;">
+							<div class="col-md-5 input-domain">
 								<input type="text" class="form-control" v-bind:value="domain" disabled />
 							</div>
 						</div>
@@ -382,6 +378,28 @@
 	</script>
 
 	<style>
+		@media only screen and (max-width: 767px) {
+			#claimModal .at-icon {
+				text-align: center;
+			}
+		}
+		@media only screen and (min-width: 768px) {
+			#claimModal .input-domain {
+				padding-left: 0px;
+			}
+			#claimModal .at-icon span {
+				position: absolute;
+			    top: 50%;
+			    transform: translateY(-50%);
+			}
+			#claimModal .at-icon {
+				padding-left: 12px;
+				padding-right: 0px;
+			}
+			#claimModal .input-email {
+				padding-right: 0px;
+			}
+		}
 		/*#claimModal .btn-primary:hover {
 		 	color: #286090;
     		background-color: #fdfdfd;

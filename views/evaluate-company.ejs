@@ -16,7 +16,7 @@
 			<template v-if="company != null">
 				<div class="row">
 					<div class="offset-md-3 col-md-1">
-						<img v-bind:src="company.screenshot" style="width: 100%; height: 50px; object-fit: cover"
+						<img v-bind:src="company.screenshot" class="screenshot" style="width: 100%; object-fit: cover"
 							onerror="this.src = '/public/img/placeholder-image.png'" />
 					</div>
 
@@ -168,6 +168,18 @@
 	</script>
 
 	<style>
+		/* for mobile  */
+		@media only screen and (max-width: 767px) {
+			.screenshot {
+				height: 200px;
+			}
+		}
+		/* for desktop  */
+		@media only screen and (min-width: 768px) {
+			.screenshot {
+				height: 50px;
+			}
+		}
 		#btn-submit-review:hover {
 			color: black;
 			background-color: #c2d5f7;

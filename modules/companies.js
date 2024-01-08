@@ -226,15 +226,17 @@ module.exports =  {
                 bucket.openDownloadStreamByName(user.profileImage).pipe(result)
                 return*/
 
-                const fileData = await fs.readFileSync(company.screenshot)
-                const buffer = Buffer.from(fileData, "base64")
-                result.writeHead(200, {
-                    "Content-Type": "image/png",
-                    "Content-Length": buffer.length
-                })
+                if (await fs.existsSync(company.screenshot)) {
+                    const fileData = await fs.readFileSync(company.screenshot)
+                    const buffer = Buffer.from(fileData, "base64")
+                    result.writeHead(200, {
+                        "Content-Type": "image/png",
+                        "Content-Length": buffer.length
+                    })
 
-                result.end(buffer)
-                return
+                    result.end(buffer)
+                    return
+                }
 
                 /*let base64 = user.profileImage.buffer
 

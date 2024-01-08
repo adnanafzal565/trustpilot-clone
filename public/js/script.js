@@ -7,7 +7,7 @@ const ReviewComponent = {
                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" />
                 </div>
 
-                <div class="col-md-11">
+                <div class="col-md-11 margin-top-mobile-20">
                     <p style="margin-bottom: 0px; font-weight: bold;" v-text="review.user.name"></p>
                     <p style="color: gray;">
                         <span v-text="review.user.reviews"></span> reviews
