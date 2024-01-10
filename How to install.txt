@@ -10,9 +10,6 @@
 - Then open your browser and enter the following address:
     > http://localhost:4000/
 
-Website = https://adnan-tech.com
-Facebook = https://web.facebook.com/ComputerProgrammingTutorial
-Email                    = support@adnan-tech.com
-WhatsApp (Messages only) = +923105461304
+If you face any problem, please feel free to contact us:
 
-If you face any problem, please feel free to contact us.
+support@adnan-tech.com
